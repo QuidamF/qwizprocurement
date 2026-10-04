@@ -126,6 +126,56 @@ El servidor estará accesible en:
 
 ---
 
+## 🍓 Despliegue en Raspberry Pi (Zero 2 W / 3 / 4 / 5) con PM2 y Modo Kiosko
+
+### 1. Instalación de Mosquitto MQTT Broker como Servicio del Sistema
+Para que Mosquitto inicie automáticamente con la Raspberry Pi:
+
+```bash
+# Instalar broker y cliente
+sudo apt update
+sudo apt install -y mosquitto mosquitto-clients
+
+# Configurar para permitir conexiones de botoneras en red local
+sudo tee /etc/mosquitto/conf.d/default.conf > /dev/null << 'EOF'
+listener 1883
+allow_anonymous true
+EOF
+
+# Habilitar e iniciar servicio systemd
+sudo systemctl enable mosquitto
+sudo systemctl restart mosquitto
+
+# Verificar estado
+sudo systemctl status mosquitto
+```
+
+### 2. Instalación de PM2 y Chromium
+```bash
+# Instalar Chromium y herramientas de pantalla
+sudo apt install -y chromium-browser x11-xserver-utils
+
+# Instalar Node.js y PM2
+sudo apt install -y nodejs npm
+sudo npm install -g pm2
+```
+
+### 3. Configuración de Autoarranque con PM2 (`ecosystem.config.json`)
+El archivo `ecosystem.config.json` administra tanto el backend FastAPI como el script `start_kiosk.sh` (con delay de 20 segundos y verificación activa de salud):
+
+```bash
+# Iniciar servicios con PM2
+pm2 start ecosystem.config.json
+
+# Guardar la lista de procesos activos
+pm2 save
+
+# Configurar inicio automático en el arranque del sistema (ejecutar el comando que indique PM2)
+pm2 startup
+```
+
+---
+
 ## 👥 Créditos y Licencia
 
 Desarrollado para la dinámica corporativa del **Día del Comprador** — *Emendare Artem Emptionis*.
