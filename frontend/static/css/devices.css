@@ -1,0 +1,224 @@
+/* Device Manager Stylesheet */
+.devices-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.devices-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent-teal);
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.devices-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.devices-title-group h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.devices-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Devices Table Card */
+.devices-table-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(110, 194, 188, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.devices-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.devices-table th {
+  text-align: left;
+  padding: 10px 14px;
+  color: var(--accent-teal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(110, 194, 188, 0.2);
+}
+
+.devices-table tbody tr {
+  background: rgba(34, 43, 80, 0.6);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.devices-table tbody tr:hover {
+  background: rgba(42, 54, 99, 0.9);
+}
+
+.devices-table td {
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.devices-table td:first-child {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.devices-table td:last-child {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.conn-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.conn-mqtt {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border: 1px solid #10B981;
+}
+
+.conn-web {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
+  border: 1px solid #3B82F6;
+}
+
+.hw-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+/* MQTT Simulator Box */
+.mqtt-simulator-card {
+  background: rgba(26, 34, 64, 0.8);
+  border: 1px solid rgba(110, 194, 188, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.sim-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.sim-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-field-group label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.sim-input {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(110, 194, 188, 0.3);
+  border-radius: var(--radius-sm);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.sim-input:focus {
+  outline: none;
+  border-color: var(--accent-teal);
+}
+
+.sim-btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.sim-key-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--accent-teal);
+  background: rgba(42, 54, 99, 0.6);
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.sim-key-btn:hover {
+  background: var(--accent-teal);
+  color: #1A2240;
+}
+
+.sim-key-btn:active {
+  transform: scale(0.95);
+}
+
+/* Live MQTT Console Log */
+.mqtt-terminal-box {
+  background: #0B0F1D;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #6EE7B7;
+  height: 140px;
+  overflow-y: auto;
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+.term-entry {
+  margin-bottom: 2px;
+}
+
+.term-time {
+  color: #64748B;
+  margin-right: 6px;
+}
+
+.term-topic {
+  color: #93C5FD;
+}

@@ -1,0 +1,392 @@
+[
+  {
+    "id": 1,
+    "level": "Básico",
+    "text": "¿Cuál es el principal objetivo del área de Compras?",
+    "options": {
+      "A": "Vender productos",
+      "B": "Contratar personal",
+      "C": "Adquirir bienes y servicios necesarios para la empresa",
+      "D": "Desarrollar medicamentos"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 2,
+    "level": "Básico",
+    "text": "¿Qué significa \"TCO\" en Compras?",
+    "options": {
+      "A": "Total Cost of Ownership",
+      "B": "Total Contract Organization",
+      "C": "Time Cost Optimization",
+      "D": "Trade Cost Office"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 3,
+    "level": "Básico",
+    "text": "¿Cuál de los siguientes es un criterio clave para seleccionar un proveedor?",
+    "options": {
+      "A": "Color del logotipo",
+      "B": "Calidad, costo y servicio",
+      "C": "Antigüedad del sitio web",
+      "D": "Número de empleados"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 4,
+    "level": "Básico",
+    "text": "¿Qué documento formaliza una compra?",
+    "options": {
+      "A": "Factura",
+      "B": "Orden de compra",
+      "C": "Cotización",
+      "D": "Contrato laboral"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 5,
+    "level": "Básico",
+    "text": "¿Cuántas cotizaciones suelen solicitarse como buena práctica antes de adjudicar una compra?",
+    "options": {
+      "A": "1",
+      "B": "2",
+      "C": "3 o más",
+      "D": "10"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 6,
+    "level": "Básico",
+    "text": "¿Qué área suele ser el cliente interno de Compras?",
+    "options": {
+      "A": "Finanzas",
+      "B": "Producción",
+      "C": "Marketing",
+      "D": "Cualquier área que requiera bienes o servicios"
+    },
+    "correct_answer": "D",
+    "time_limit": 15
+  },
+  {
+    "id": 7,
+    "level": "Básico",
+    "text": "¿Qué significa negociar con un proveedor?",
+    "options": {
+      "A": "Solicitar descuentos únicamente",
+      "B": "Buscar acuerdos mutuamente beneficiosos",
+      "C": "Cambiar de proveedor",
+      "D": "Comparar facturas"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 8,
+    "level": "Básico",
+    "text": "¿Cuál de los siguientes es un gasto indirecto?",
+    "options": {
+      "A": "Materia prima para fabricar medicamentos",
+      "B": "Ingrediente activo farmacéutico",
+      "C": "Servicio de limpieza",
+      "D": "Excipiente"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 9,
+    "level": "Básico",
+    "text": "¿Qué es un proveedor estratégico?",
+    "options": {
+      "A": "El más cercano geográficamente",
+      "B": "El más económico",
+      "C": "Aquel cuyo suministro es crítico para el negocio",
+      "D": "El más antiguo"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 10,
+    "level": "Básico",
+    "text": "¿Qué área suele validar la calidad de materiales farmacéuticos?",
+    "options": {
+      "A": "Compras",
+      "B": "Recursos Humanos",
+      "C": "Calidad",
+      "D": "Jurídico"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 11,
+    "level": "Intermedio",
+    "text": "¿Qué significa \"lead time\"?",
+    "options": {
+      "A": "Tiempo de entrega",
+      "B": "Tiempo de pago",
+      "C": "Duración del contrato",
+      "D": "Tiempo de auditoría"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 12,
+    "level": "Intermedio",
+    "text": "¿Cuál es el objetivo principal de una licitación?",
+    "options": {
+      "A": "Aumentar inventarios",
+      "B": "Seleccionar la mejor oferta bajo criterios definidos",
+      "C": "Eliminar proveedores",
+      "D": "Reducir impuestos"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 13,
+    "level": "Intermedio",
+    "text": "En una empresa farmacéutica, ¿qué es un API?",
+    "options": {
+      "A": "Application Programming Interface",
+      "B": "Active Pharmaceutical Ingredient",
+      "C": "Approved Purchasing Item",
+      "D": "Authorized Product Inventory"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 14,
+    "level": "Intermedio",
+    "text": "¿Qué departamento suele aprobar los términos legales de un contrato?",
+    "options": {
+      "A": "Compras",
+      "B": "Calidad",
+      "C": "Jurídico",
+      "D": "Logística"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 15,
+    "level": "Intermedio",
+    "text": "¿Qué indicador mide el desempeño de un proveedor?",
+    "options": {
+      "A": "KPI",
+      "B": "ERP",
+      "C": "CRM",
+      "D": "GMP"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 16,
+    "level": "Intermedio",
+    "text": "¿Qué significa GMP en la industria farmacéutica?",
+    "options": {
+      "A": "Global Manufacturing Process",
+      "B": "Good Manufacturing Practices",
+      "C": "General Market Policy",
+      "D": "Government Medical Program"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 17,
+    "level": "Intermedio",
+    "text": "¿Cuál es una ventaja de consolidar proveedores?",
+    "options": {
+      "A": "Incrementar el trabajo administrativo",
+      "B": "Reducir poder de negociación",
+      "C": "Obtener mejores condiciones comerciales",
+      "D": "Aumentar riesgos operativos"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 18,
+    "level": "Intermedio",
+    "text": "¿Qué es una compra de emergencia?",
+    "options": {
+      "A": "Una compra planeada",
+      "B": "Una adquisición fuera del proceso normal por necesidad urgente",
+      "C": "Una compra internacional",
+      "D": "Una compra anual"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 19,
+    "level": "Intermedio",
+    "text": "¿Qué significa la sigla ERP?",
+    "options": {
+      "A": "Enterprise Resource Planning",
+      "B": "External Resource Provider",
+      "C": "Executive Report Process",
+      "D": "Enterprise Risk Program"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 20,
+    "level": "Intermedio",
+    "text": "¿Cuál es un riesgo de depender de un solo proveedor?",
+    "options": {
+      "A": "Mejor servicio",
+      "B": "Menos contratos",
+      "C": "Interrupciones de suministro",
+      "D": "Menos auditorías"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 21,
+    "level": "Intermedio",
+    "text": "¿Qué documento emite un proveedor para proponer precios y condiciones?",
+    "options": {
+      "A": "Contrato",
+      "B": "Cotización",
+      "C": "Recibo",
+      "D": "Certificado GMP"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 22,
+    "level": "Intermedio",
+    "text": "¿Qué busca una auditoría a proveedores?",
+    "options": {
+      "A": "Confirmar el cumplimiento de requisitos establecidos",
+      "B": "Negociar precios",
+      "C": "Aumentar inventarios",
+      "D": "Revisar ventas"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 23,
+    "level": "Intermedio",
+    "text": "¿Cuál es una práctica ética para un comprador?",
+    "options": {
+      "A": "Aceptar regalos de alto valor",
+      "B": "Favorecer amigos proveedores",
+      "C": "Mantener imparcialidad en las decisiones",
+      "D": "Compartir información confidencial"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 24,
+    "level": "Intermedio",
+    "text": "¿Qué es el ahorro en Compras?",
+    "options": {
+      "A": "Comprar menos cantidad",
+      "B": "Diferencia positiva entre costo esperado y costo negociado",
+      "C": "Reducir calidad",
+      "D": "Pagar después"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 25,
+    "level": "Intermedio",
+    "text": "¿Qué significa MOQ?",
+    "options": {
+      "A": "Minimum Order Quantity",
+      "B": "Market Order Quality",
+      "C": "Medical Operations Quality",
+      "D": "Maximum Order Quality"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  },
+  {
+    "id": 26,
+    "level": "Intermedio",
+    "text": "¿Cuál es el propósito principal de un contrato con proveedores?",
+    "options": {
+      "A": "Incrementar burocracia",
+      "B": "Formalizar derechos, obligaciones y condiciones comerciales",
+      "C": "Aprobar pagos",
+      "D": "Generar reportes financieros"
+    },
+    "correct_answer": "B",
+    "time_limit": 15
+  },
+  {
+    "id": 27,
+    "level": "Intermedio",
+    "text": "¿Qué área suele gestionar el almacenamiento de materiales?",
+    "options": {
+      "A": "Jurídico",
+      "B": "Compras",
+      "C": "Almacén/Logística",
+      "D": "Marketing"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 28,
+    "level": "Intermedio",
+    "text": "¿Cuál es una ventaja de los acuerdos marco o contratos de largo plazo?",
+    "options": {
+      "A": "Menor control",
+      "B": "Mayor incertidumbre de precios",
+      "C": "Estabilidad de suministro y condiciones comerciales",
+      "D": "Más órdenes de compra urgentes"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 29,
+    "level": "Intermedio",
+    "text": "¿Qué significa abastecimiento estratégico (Strategic Sourcing)?",
+    "options": {
+      "A": "Comprar únicamente al proveedor más barato",
+      "B": "Comprar localmente",
+      "C": "Analizar mercados y categorías para optimizar valor y riesgo",
+      "D": "Comprar grandes volúmenes"
+    },
+    "correct_answer": "C",
+    "time_limit": 15
+  },
+  {
+    "id": 30,
+    "level": "Intermedio",
+    "text": "¿Cuál es el indicador más relacionado con entregas a tiempo?",
+    "options": {
+      "A": "OTIF (On Time In Full)",
+      "B": "EBITDA",
+      "C": "ROI",
+      "D": "NPS"
+    },
+    "correct_answer": "A",
+    "time_limit": 15
+  }
+]

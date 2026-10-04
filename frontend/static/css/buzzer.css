@@ -1,0 +1,171 @@
+/* Buzzer (Simulated Controller) Stylesheet */
+.buzzer-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  justify-content: space-between;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* Header Bar */
+.buzzer-header {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--accent-teal);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.device-badge-tag {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent-teal);
+}
+
+.device-team-name {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.device-score-tag {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FBBF24;
+}
+
+/* Status Banner / Card */
+.buzzer-status-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  margin: 16px 0;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.buzzer-status-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.buzzer-status-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.buzzer-status-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* 4 Big Tactile Touch Buttons */
+.buzzer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+  max-height: 480px;
+}
+
+.buzzer-btn {
+  background: rgba(34, 43, 80, 0.8);
+  border: 3px solid var(--accent-teal);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.buzzer-btn-letter {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--accent-teal);
+  text-shadow: 0 0 15px var(--accent-teal-glow);
+  transition: all 0.15s ease;
+}
+
+/* Active State (Can Answer) */
+.buzzer-grid.can-answer .buzzer-btn {
+  background: rgba(42, 54, 99, 0.9);
+  cursor: pointer;
+  animation: pulse-border 1.5s infinite alternate;
+}
+
+.buzzer-grid.can-answer .buzzer-btn:active {
+  transform: scale(0.92);
+  background: var(--accent-teal);
+  border-color: #FFFFFF;
+}
+
+.buzzer-grid.can-answer .buzzer-btn:active .buzzer-btn-letter {
+  color: #1A2240;
+  text-shadow: none;
+}
+
+@keyframes pulse-border {
+  from { border-color: var(--accent-teal); box-shadow: 0 0 10px rgba(110, 194, 188, 0.3); }
+  to { border-color: #83d3cd; box-shadow: 0 0 25px rgba(110, 194, 188, 0.6); }
+}
+
+/* Disabled State */
+.buzzer-grid.disabled .buzzer-btn {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: rgba(110, 194, 188, 0.2);
+  box-shadow: none;
+}
+
+/* Selected Button Highlight */
+.buzzer-btn.selected {
+  background: var(--accent-teal) !important;
+  border-color: #FFFFFF !important;
+  opacity: 1 !important;
+  transform: scale(0.98);
+  box-shadow: 0 0 30px var(--accent-teal-glow) !important;
+}
+
+.buzzer-btn.selected .buzzer-btn-letter {
+  color: #1A2240 !important;
+  text-shadow: none !important;
+}
+
+/* Result Feedback States on Status Card */
+.buzzer-status-card.correct {
+  border-color: var(--color-success);
+  background: rgba(16, 185, 129, 0.2);
+  box-shadow: 0 0 30px var(--color-success-glow);
+}
+
+.buzzer-status-card.incorrect {
+  border-color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 0 30px var(--color-danger-glow);
+}

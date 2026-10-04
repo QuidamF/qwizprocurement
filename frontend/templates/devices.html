@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Dispositivos & Red MQTT - Quiz Procurement</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/devices.css">
+</head>
+<body>
+  <div class="cosmic-bg">
+    <div class="orbit-decor-1"></div>
+    <div class="orbit-satellite sat-top-right"></div>
+    <div class="orbit-satellite sat-left"></div>
+  </div>
+
+  <div class="app-container">
+    <div class="devices-container">
+      <!-- Top Header -->
+      <header class="devices-header">
+        <div class="devices-title-group">
+          <span style="font-size: 1.8rem;">📡</span>
+          <div>
+            <h1>Gestor de Dispositivos & Conectividad MQTT</h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">
+              Monitoreo y administración de botoneras físicas (ESP32) y virtuales
+            </p>
+          </div>
+        </div>
+
+        <div class="devices-meta-pills">
+          <span id="mqtt-broker-badge" class="badge badge-success">
+            🟢 Broker MQTT: Conectado (127.0.0.1:1883)
+          </span>
+          <span id="devices-count-badge" class="badge badge-teal">
+            10 Dispositivos
+          </span>
+          <a href="/moderator" target="_blank" class="btn btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">
+            Ir al Moderador
+          </a>
+          <a href="/" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">
+            Hub Principal
+          </a>
+        </div>
+      </header>
+
+      <!-- Section 1: Live Devices Grid Table -->
+      <section class="devices-table-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+          <h2 style="font-size: 1.1rem; color: #FFFFFF; font-weight: 700;">
+            Botoneras Registradas en el Game Engine
+          </h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">
+            Identidad Lógica (BOT-XX) vinculada a Identidad Física (Hardware MAC)
+          </span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="devices-table">
+            <thead>
+              <tr>
+                <th style="width: 100px;">ID Lógico</th>
+                <th>Nombre del Equipo</th>
+                <th style="width: 160px;">Tipo de Enlace</th>
+                <th>ID Físico (MAC / HW)</th>
+                <th style="width: 140px;">IP / Firmware</th>
+                <th style="width: 110px;">Estado</th>
+                <th style="width: 90px;">Puntaje</th>
+                <th style="width: 160px; text-align: center;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="devices-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 2: MQTT Interactive Tester / Simulator -->
+      <section class="mqtt-simulator-card">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <h2 style="font-size: 1.1rem; color: var(--accent-teal); font-weight: 700;">
+            🕹️ Simulador de Botonera ESP32 (Firmware V2 - botonera.ino)
+          </h2>
+          <span class="badge badge-teal">Tópico: octopy/quiz/box/{boxID}/answer</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+          Emula exactamente el firmware <strong>arduino/botonera.ino</strong> conectado por MQTT a <code>127.0.0.1:1883</code>:
+        </p>
+
+        <div class="sim-grid">
+          <!-- Target Device -->
+          <div class="sim-field-group">
+            <label>Dispositivo Destino (BOX ID):</label>
+            <select id="sim-target-device" class="sim-input">
+              <option value="OCTY-01">OCTY-01 (Equipo 1)</option>
+              <option value="OCTY-02">OCTY-02 (Equipo 2)</option>
+              <option value="OCTY-03">OCTY-03 (Equipo 3)</option>
+              <option value="OCTY-04">OCTY-04 (Equipo 4)</option>
+              <option value="OCTY-05">OCTY-05 (Equipo 5)</option>
+              <option value="OCTY-06">OCTY-06 (Equipo 6)</option>
+              <option value="OCTY-07">OCTY-07 (Equipo 7)</option>
+              <option value="OCTY-08">OCTY-08 (Equipo 8)</option>
+              <option value="OCTY-09">OCTY-09 (Equipo 9)</option>
+              <option value="OCTY-10">OCTY-10 (Equipo 10)</option>
+            </select>
+          </div>
+
+          <div class="sim-field-group">
+            <label>Chip ID / MAC Emulada:</label>
+            <input type="text" id="sim-hw-mac" class="sim-input" value="24718392">
+          </div>
+
+          <!-- Pulsar Botón Emulado -->
+          <div class="sim-field-group">
+            <label>Simular Pulsación de Botón (Payload MQTT):</label>
+            <div class="sim-btn-row">
+              <button class="sim-key-btn" data-button="A">A</button>
+              <button class="sim-key-btn" data-button="B">B</button>
+              <button class="sim-key-btn" data-button="C">C</button>
+              <button class="sim-key-btn" data-button="D">D</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; gap: 10px;">
+          <button id="btn-sim-register" class="btn btn-outline-teal" style="font-size: 0.85rem; padding: 8px 16px;">
+            📡 Enviar Anuncio de Registro MQTT (quiz/device/register)
+          </button>
+        </div>
+
+        <!-- Terminal log of MQTT events -->
+        <div class="mqtt-terminal-box" id="mqtt-terminal">
+          <div class="term-entry">
+            <span class="term-time">[Iniciado]</span>
+            <span class="term-topic">quiz/server/status</span>: Servidor listo y escuchando broker local en puerto 1883
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/static/js/ws.js"></script>
+  <script src="/static/js/devices.js"></script>
+</body>
+</html>

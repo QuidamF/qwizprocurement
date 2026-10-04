@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Botonera Simulada - Quiz Procurement</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/buzzer.css">
+</head>
+<body>
+  <div class="cosmic-bg">
+    <div class="orbit-decor-1"></div>
+    <div class="orbit-satellite sat-top-right"></div>
+  </div>
+
+  <div class="app-container">
+    <div class="buzzer-wrapper">
+      <!-- Header -->
+      <header class="buzzer-header">
+        <div>
+          <div id="tag-device-id" class="device-badge-tag">BOT-01</div>
+          <div id="tag-team-name" class="device-team-name">Equipo 1</div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase;">Puntaje</div>
+          <div id="tag-score" class="device-score-tag">0 pts</div>
+        </div>
+      </header>
+
+      <!-- Status Card -->
+      <div id="buzzer-status-card" class="buzzer-status-card">
+        <div id="status-icon" class="buzzer-status-icon">📡</div>
+        <div id="status-title" class="buzzer-status-title">Conectando...</div>
+        <div id="status-subtitle" class="buzzer-status-subtitle">Sincronizando con el servidor</div>
+      </div>
+
+      <!-- 4 Big Tactile Touch Buttons -->
+      <main id="buzzer-grid" class="buzzer-grid disabled">
+        <button id="btn-a" class="buzzer-btn" data-letter="A">
+          <span class="buzzer-btn-letter">A</span>
+        </button>
+        <button id="btn-b" class="buzzer-btn" data-letter="B">
+          <span class="buzzer-btn-letter">B</span>
+        </button>
+        <button id="btn-c" class="buzzer-btn" data-letter="C">
+          <span class="buzzer-btn-letter">C</span>
+        </button>
+        <button id="btn-d" class="buzzer-btn" data-letter="D">
+          <span class="buzzer-btn-letter">D</span>
+        </button>
+      </main>
+    </div>
+  </div>
+
+  <script src="/static/js/ws.js"></script>
+  <script src="/static/js/buzzer.js"></script>
+</body>
+</html>

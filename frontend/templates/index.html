@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Procurement - Trivia Día del Comprador</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <style>
+    .hub-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .hub-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .hub-card {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--accent-teal);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .hub-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 35px var(--accent-teal-glow);
+      border-color: #FFFFFF;
+    }
+    .hub-card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .hub-card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent-teal);
+      margin-bottom: 8px;
+    }
+    .hub-card-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .buzzer-links-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .buzzer-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 8px;
+      background: rgba(34, 43, 80, 0.7);
+      border: 1px solid var(--accent-teal);
+      border-radius: var(--radius-md);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .buzzer-pill:hover {
+      background: var(--accent-teal);
+      color: #1A2240;
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmic-bg">
+    <div class="orbit-decor-1"></div>
+    <div class="orbit-satellite sat-top-right"></div>
+    <div class="orbit-satellite sat-left"></div>
+  </div>
+
+  <div class="app-container">
+    <div class="hub-container">
+      <header class="hub-header">
+        <img src="/static/img/logo_emendare.png" alt="Emendare Artem Emptionis" style="max-height: 54px;">
+        <h1 style="font-family: var(--font-serif); font-size: 2.6rem; letter-spacing: 0.05em; color: #FFFFFF;">
+          TRIVIA DÍA DEL COMPRADOR
+        </h1>
+        <p style="color: var(--accent-teal); font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.1em;">
+          Maqueta Web de Quiz con Botoneras Simuladas (Fase 1)
+        </p>
+      </header>
+
+      <section class="hub-grid">
+        <!-- Pantalla Pública -->
+        <a href="/screen" target="_blank" class="hub-card">
+          <div>
+            <div class="hub-card-icon">🖥️</div>
+            <div class="hub-card-title">Pantalla de Juego (Display)</div>
+            <div class="hub-card-desc">
+              Interfaz pública para proyector o pantalla grande. Muestra la portada, preguntas en cuadrícula 2×2, temporizador dinámico y revelación de aciertos.
+            </div>
+          </div>
+          <span class="btn btn-teal">Abrir Pantalla</span>
+        </a>
+
+        <!-- Panel del Moderador -->
+        <a href="/moderator" target="_blank" class="hub-card">
+          <div>
+            <div class="hub-card-icon">🎛️</div>
+            <div class="hub-card-title">Panel del Moderador</div>
+            <div class="hub-card-desc">
+              Consola de control de la partida: seleccionar preguntas, iniciar/cerrar tiempo, ver telemetría de respuestas con orden de milisegundos y puntajes.
+            </div>
+          </div>
+          <span class="btn btn-teal">Abrir Moderador</span>
+        </a>
+
+        <!-- Simulador Multi-Botonera -->
+        <a href="/multi-buzzer" target="_blank" class="hub-card">
+          <div>
+            <div class="hub-card-icon">🕹️</div>
+            <div class="hub-card-title">Simulador Multi-Botonera</div>
+            <div class="hub-card-desc">
+              Herramienta de pruebas para desarrollador: Abre 4 o 10 botoneras simuladas en una sola pantalla para validar el flujo completo sin múltiples ventanas.
+            </div>
+          </div>
+          <span class="btn btn-outline-teal">Abrir Multi-Buzzer</span>
+        </a>
+
+        <!-- Gestor de Dispositivos & MQTT -->
+        <a href="/devices" target="_blank" class="hub-card">
+          <div>
+            <div class="hub-card-icon">📡</div>
+            <div class="hub-card-title">Gestor de Dispositivos & MQTT</div>
+            <div class="hub-card-desc">
+              Monitor en vivo de botoneras físicas (ESP32) y web, estado de conexión en el broker MQTT (127.0.0.1:1883), test de LEDs y mapeo de IDs.
+            </div>
+          </div>
+          <span class="btn btn-teal">Abrir Gestor</span>
+        </a>
+      </section>
+
+      <!-- Botoneras individuales -->
+      <section class="card">
+        <h2 style="font-size: 1.25rem; margin-bottom: 8px; color: var(--accent-teal);">
+          📱 Botoneras Individuales Móviles (BOT-01 a BOT-10)
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Abre cualquiera de estos enlaces en smartphones, tablets o navegadores separados para simular a los equipos participantes:
+        </p>
+        <div class="buzzer-links-grid">
+          <a href="/buzzer?id=BOT-01" target="_blank" class="buzzer-pill">BOT-01</a>
+          <a href="/buzzer?id=BOT-02" target="_blank" class="buzzer-pill">BOT-02</a>
+          <a href="/buzzer?id=BOT-03" target="_blank" class="buzzer-pill">BOT-03</a>
+          <a href="/buzzer?id=BOT-04" target="_blank" class="buzzer-pill">BOT-04</a>
+          <a href="/buzzer?id=BOT-05" target="_blank" class="buzzer-pill">BOT-05</a>
+          <a href="/buzzer?id=BOT-06" target="_blank" class="buzzer-pill">BOT-06</a>
+          <a href="/buzzer?id=BOT-07" target="_blank" class="buzzer-pill">BOT-07</a>
+          <a href="/buzzer?id=BOT-08" target="_blank" class="buzzer-pill">BOT-08</a>
+          <a href="/buzzer?id=BOT-09" target="_blank" class="buzzer-pill">BOT-09</a>
+          <a href="/buzzer?id=BOT-10" target="_blank" class="buzzer-pill">BOT-10</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

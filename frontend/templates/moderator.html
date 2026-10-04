@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Cabina de Control del Moderador - Quiz Procurement</title>
+  <link rel="stylesheet" href="/static/css/common.css?v=20261003_v4">
+  <link rel="stylesheet" href="/static/css/moderator.css?v=20261003_v4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="mod-tv-body">
+  <div class="mod-tv-container">
+    
+    <!-- 1. Broadcast Master Header -->
+    <header class="mod-tv-header">
+      <div class="header-left">
+        <div class="studio-badge">
+          <span class="live-indicator-dot"></span>
+          <span>CABINA DE MODERADOR</span>
+        </div>
+        <h1 class="header-title">Trivia Día del Comprador</h1>
+        <div id="mod-state-badge" class="state-pill state-idle">
+          <span class="state-dot"></span>
+          <span id="state-text">IDLE / ESPERA</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="q-progress-box">
+          <span class="q-progress-label">PROGRESO</span>
+          <span id="q-progress-indicator" class="q-progress-num">Pregunta 1 / 30</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button id="btn-fullscreen" class="btn btn-ghost" title="Pantalla Completa (F11)">
+          ⛶ <span class="hide-mobile">Pantalla Completa</span>
+        </button>
+        <button id="btn-toggle-sidebar" class="btn btn-ghost" title="Mostrar/Ocultar lista de preguntas">
+          📑 <span class="hide-mobile">Preguntas</span>
+        </button>
+        <button id="btn-show-shortcuts" class="btn btn-ghost" title="Ver atajos de teclado">
+          ⌨️ <span class="hide-mobile">Atajos</span>
+        </button>
+        <a href="/devices" target="_blank" class="btn btn-ghost">
+          📡 <span class="hide-mobile">Dispositivos</span>
+        </a>
+        <a href="/screen" target="_blank" class="btn btn-ghost">
+          🖥️ <span class="hide-mobile">Pantalla</span>
+        </a>
+        <a href="/moderator/backup" target="_blank" class="btn btn-ghost" title="Ver copia del diseño anterior" style="color: var(--text-dim); font-size: 0.78rem;">
+          ⏪ <span class="hide-mobile">Layout Anterior</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- 2. TV Control Room - Giant Action Control Bar -->
+    <section class="tv-control-bar">
+      <!-- Action 1: Siguiente Pregunta (Auto-activa) / Iniciar Trivia -->
+      <button id="btn-next-question" class="tv-btn tv-btn-next" title="Atajo: Tecla [Espacio] o [N]">
+        <div id="btn-next-badge" class="tv-btn-badge">PASO 1 • [Espacio] o [N]</div>
+        <div class="tv-btn-content">
+          <span id="btn-next-icon" class="tv-btn-icon">⏭️</span>
+          <div class="tv-btn-text">
+            <span id="btn-next-title" class="tv-btn-title">Siguiente Pregunta</span>
+            <span id="btn-next-sub" class="tv-btn-sub">Avanza y activa respuestas</span>
+          </div>
+        </div>
+      </button>
+
+      <!-- Action 2: Dejar de Escuchar Respuestas -->
+      <button id="btn-close-question" class="tv-btn tv-btn-stop" disabled title="Atajo: Tecla [Enter] o [S]">
+        <div class="tv-btn-badge">PASO 2 • [Enter] o [S]</div>
+        <div class="tv-btn-content">
+          <span class="tv-btn-icon">🛑</span>
+          <div class="tv-btn-text">
+            <span class="tv-btn-title">Dejar de Escuchar</span>
+            <span class="tv-btn-sub">Cierra y bloquea botoneras</span>
+          </div>
+        </div>
+      </button>
+
+      <!-- Action 3: Revelar Respuesta Correcta -->
+      <button id="btn-show-result" class="tv-btn tv-btn-reveal" disabled title="Atajo: Tecla [R]">
+        <div class="tv-btn-badge">PASO 3 • Tecla [R]</div>
+        <div class="tv-btn-content">
+          <span class="tv-btn-icon">💡</span>
+          <div class="tv-btn-text">
+            <span class="tv-btn-title">Revelar Resultado</span>
+            <span class="tv-btn-sub">Muestra aciertos y puntos</span>
+          </div>
+        </div>
+      </button>
+
+      <!-- Utility: Reset Button -->
+      <button id="btn-reset-game" class="tv-btn tv-btn-reset" title="Reiniciar toda la partida">
+        <span class="tv-btn-icon">🔄</span>
+        <span class="tv-btn-title-small">Reiniciar</span>
+      </button>
+    </section>
+
+    <!-- 3. Main Operational Stage (Collapsible Sidebar + Live Workspace) -->
+    <div class="mod-tv-main">
+      
+      <!-- Backdrop for Tablet Drawer -->
+      <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+      <!-- Left Drawer: 30 Questions Playlist -->
+      <aside id="mod-sidebar" class="mod-tv-sidebar">
+        <div class="sidebar-header">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h3 class="sidebar-title">Lista de Preguntas (30)</h3>
+            <button id="btn-close-sidebar" class="sidebar-close-btn" title="Cerrar">&times;</button>
+          </div>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="q-filter" class="search-input" placeholder="Buscar pregunta o tema...">
+          </div>
+        </div>
+        <div id="questions-list" class="questions-scroll-area">
+          <!-- Rendered dynamically -->
+        </div>
+      </aside>
+
+      <!-- Center & Right Workspace -->
+      <main class="mod-tv-workspace">
+        
+        <!-- Active Question Presenter Card -->
+        <section class="active-question-card">
+          <div class="card-meta-bar">
+            <div class="q-level-tag" id="active-q-level">NIVEL: --</div>
+            <div class="q-substate-note" id="mod-substate-text">Listo para iniciar</div>
+          </div>
+
+          <h2 id="active-q-title" class="q-main-title">
+            Presiona <span style="color: var(--accent-teal);">"Siguiente Pregunta"</span> para comenzar
+          </h2>
+
+          <div id="active-q-options" class="q-options-grid">
+            <!-- 4 Options rendered here with correct answer highlighted -->
+          </div>
+        </section>
+
+        <!-- Live Response Monitor (Pending Counter + Team Chips + Real-Time Arrival) -->
+        <section class="live-monitor-section">
+          
+          <!-- Header: Missing Teams Counter -->
+          <div class="monitor-header">
+            <div class="missing-counter-badge">
+              <span class="pulse-clock">⏳</span>
+              <span id="pending-counter-text" class="missing-main-text">Esperando conexión de dispositivos...</span>
+            </div>
+            
+            <div class="summary-pill">
+              <span id="total-summary-tag">0 conectados</span>
+            </div>
+          </div>
+
+          <!-- Missing / Pending Chips Grid -->
+          <div id="pending-chips-container" class="pending-teams-grid">
+            <!-- Pending chips dynamically injected -->
+          </div>
+
+          <!-- All Teams Answered Celebration Banner -->
+          <div id="all-done-banner" class="all-done-card" style="display: none;">
+            <div class="all-done-icon">🎉</div>
+            <div class="all-done-info">
+              <h4>¡Todos los equipos conectados han respondido!</h4>
+              <p>Puedes presionar <strong>[Enter]</strong> para cerrar o <strong>[R]</strong> para revelar la respuesta ganadora.</p>
+            </div>
+          </div>
+
+          <!-- Arrival Feed & Scoreboard Table -->
+          <div class="arrival-feed-container">
+            <div class="arrival-feed-header">
+              <h3>
+                ⚡ Orden de Llegada y Respuestas Recibidas 
+                <span id="answered-count-badge" class="count-badge">0</span>
+              </h3>
+              <span class="bonus-hint">Top 3 reciben bonos de velocidad (+50, +30, +10 pts)</span>
+            </div>
+
+            <div class="table-scroll-container">
+              <table class="tv-table">
+                <thead>
+                  <tr>
+                    <th style="width: 70px;">Lugar</th>
+                    <th>Equipo / ID</th>
+                    <th style="width: 140px;">Tiempo Reacción</th>
+                    <th style="width: 100px;">Opción</th>
+                    <th style="width: 130px; text-align: right;">Puntos</th>
+                  </tr>
+                </thead>
+                <tbody id="answered-table-body">
+                  <tr>
+                    <td colspan="5" class="empty-state-cell">
+                      Esperando que los equipos presionen sus botoneras...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal for Keyboard Shortcuts -->
+    <div id="modal-shortcuts" class="shortcuts-modal-backdrop" style="display: none;">
+      <div class="shortcuts-modal-card">
+        <div class="modal-header">
+          <h3>⌨️ Atajos de Teclado del Moderador</h3>
+          <button id="btn-close-modal" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="shortcuts-grid">
+          <div class="shortcut-row">
+            <kbd class="key-badge">Espacio</kbd> o <kbd class="key-badge">N</kbd>
+            <span><strong>Siguiente Pregunta:</strong> Avanza y activa en automático las botoneras.</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd class="key-badge">Enter</kbd> o <kbd class="key-badge">S</kbd>
+            <span><strong>Dejar de Escuchar:</strong> Cierra el tiempo y bloquea los botones.</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd class="key-badge">R</kbd>
+            <span><strong>Revelar Resultado:</strong> Muestra la respuesta correcta y asigna puntos.</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd class="key-badge">Esc</kbd>
+            <span><strong>Reiniciar Partida:</strong> Pide confirmación para volver a la pregunta 1.</span>
+          </div>
+          <div class="shortcut-row">
+            <kbd class="key-badge">?</kbd>
+            <span><strong>Abrir/Cerrar esta ayuda.</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/static/js/ws.js?v=20261003_v4"></script>
+  <script src="/static/js/moderator.js?v=20261003_v4"></script>
+</body>
+</html>

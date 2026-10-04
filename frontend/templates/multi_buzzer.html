@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Multi-Botonera (10 Equipos) - Quiz Procurement</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <style>
+    .multi-header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(110, 194, 188, 0.2);
+      background: var(--bg-surface);
+    }
+    .multi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .mini-buzzer-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--accent-teal);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+    .mini-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mini-device-id {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--accent-teal);
+      font-size: 1rem;
+    }
+    .mini-status-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      height: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .mini-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .mini-btn {
+      background: rgba(42, 54, 99, 0.7);
+      border: 1.5px solid var(--accent-teal);
+      border-radius: var(--radius-sm);
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 1.2rem;
+      padding: 12px 0;
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+    .mini-btn:hover:not(:disabled) {
+      background: var(--accent-teal);
+      color: #1A2240;
+    }
+    .mini-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .mini-btn.selected {
+      background: var(--accent-teal) !important;
+      color: #1A2240 !important;
+      border-color: #FFFFFF !important;
+    }
+    .mini-buzzer-card.correct {
+      border-color: var(--color-success);
+      box-shadow: 0 0 15px var(--color-success-glow);
+    }
+    .mini-buzzer-card.incorrect {
+      border-color: var(--color-danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmic-bg">
+    <div class="orbit-decor-1"></div>
+    <div class="orbit-satellite sat-top-right"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="multi-header">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 1.6rem;">🕹️</span>
+        <h1 style="font-size: 1.25rem; color: #FFFFFF;">Simulador de 10 Botoneras en Paralelo</h1>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <a href="/screen" target="_blank" class="btn btn-outline-teal" style="padding: 6px 14px; font-size: 0.85rem;">Abrir Pantalla</a>
+        <a href="/moderator" target="_blank" class="btn btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Abrir Moderador</a>
+      </div>
+    </header>
+
+    <div class="multi-grid" id="multi-grid">
+      <!-- 10 mini buzzers will be rendered here -->
+    </div>
+  </div>
+
+  <script src="/static/js/ws.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('multi-grid');
+      const buzzers = [];
+
+      for (let i = 1; i <= 10; i++) {
+        const id = `BOT-${i < 10 ? '0' + i : i}`;
+        const card = document.createElement('div');
+        card.className = 'mini-buzzer-card';
+        card.id = `card-${id}`;
+
+        card.innerHTML = `
+          <div class="mini-card-header">
+            <span class="mini-device-id">${id}</span>
+            <span id="score-${id}" style="font-family: var(--font-mono); color: #FBBF24; font-size: 0.85rem; font-weight: bold;">0 pts</span>
+          </div>
+          <div class="mini-status-text" id="status-${id}">Conectando...</div>
+          <div class="mini-btn-grid" id="btns-${id}">
+            <button class="mini-btn" data-letter="A" disabled>A</button>
+            <button class="mini-btn" data-letter="B" disabled>B</button>
+            <button class="mini-btn" data-letter="C" disabled>C</button>
+            <button class="mini-btn" data-letter="D" disabled>D</button>
+          </div>
+        `;
+        grid.appendChild(card);
+
+        // Individual WS connection for this device
+        let canAnswer = false;
+        const statusEl = document.getElementById(`status-${id}`);
+        const scoreEl = document.getElementById(`score-${id}`);
+        const btnEls = card.querySelectorAll('.mini-btn');
+
+        const ws = new QuizWS(`/ws/buzzer/${id}`, (data) => {
+          if (data.event === 'SNAPSHOT' || data.event === 'STATE_UPDATE') {
+            const snap = data.snapshot;
+            scoreEl.textContent = `${snap.score || 0} pts`;
+            btnEls.forEach(b => b.classList.remove('selected'));
+            card.classList.remove('correct', 'incorrect');
+
+            if (snap.state === 'ACTIVE') {
+              if (snap.selected_answer) {
+                canAnswer = false;
+                statusEl.textContent = `Enviado: ${snap.selected_answer} (#${snap.order})`;
+                const b = card.querySelector(`[data-letter="${snap.selected_answer}"]`);
+                if (b) b.classList.add('selected');
+                btnEls.forEach(b => b.disabled = true);
+              } else {
+                canAnswer = true;
+                statusEl.textContent = '¡DISPONIBLE!';
+                btnEls.forEach(b => b.disabled = false);
+              }
+            } else if (snap.state === 'RESULT' || snap.state === 'FINISHED') {
+              canAnswer = false;
+              btnEls.forEach(b => b.disabled = true);
+              if (snap.selected_answer) {
+                const b = card.querySelector(`[data-letter="${snap.selected_answer}"]`);
+                if (b) b.classList.add('selected');
+                if (snap.is_correct === true) {
+                  statusEl.textContent = '¡CORRECTO! 🎉';
+                  card.classList.add('correct');
+                } else if (snap.is_correct === false) {
+                  statusEl.textContent = 'INCORRECTO ❌';
+                  card.classList.add('incorrect');
+                }
+              } else {
+                statusEl.textContent = 'Sin respuesta';
+              }
+            } else {
+              canAnswer = false;
+              btnEls.forEach(b => b.disabled = true);
+              statusEl.textContent = snap.state;
+            }
+          } else if (data.event === 'ANSWER_ACCEPTED') {
+            statusEl.textContent = `Registrado #${data.order}`;
+          }
+        });
+
+        btnEls.forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!canAnswer) return;
+            canAnswer = false;
+            btnEls.forEach(b => b.disabled = true);
+            btn.classList.add('selected');
+            statusEl.textContent = `Pulsado ${btn.dataset.letter}...`;
+            window.soundFX.playPress();
+            ws.send({ button: btn.dataset.letter });
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control del Moderador - Quiz Procurement</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/moderator_backup.css">
+</head>
+<body>
+  <div class="moderator-layout">
+    <!-- Top Header -->
+    <header class="mod-header">
+      <div class="mod-title">
+        <span style="font-size: 1.4rem;">🎛️</span>
+        <h1>Control del Moderador</h1>
+        <span id="mod-state-badge" class="state-indicator state-idle">IDLE</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <span id="q-progress-indicator" style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-teal);">
+          Pregunta 1 / 30
+        </span>
+        <a href="/devices" target="_blank" class="btn btn-outline-teal" style="padding: 6px 14px; font-size: 0.85rem;">
+          📡 Gestor Dispositivos
+        </a>
+        <a href="/" target="_blank" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">Inicio Hub</a>
+      </div>
+    </header>
+
+    <!-- Master Action Controls Bar -->
+    <nav class="mod-actions-bar">
+      <!-- Siguiente: avanza y habilita en automático -->
+      <button id="btn-next-question" class="btn btn-teal btn-mod-main">
+        ⏭️ Siguiente Pregunta (Habilitar)
+      </button>
+
+      <!-- Dejar de escuchar respuestas -->
+      <button id="btn-close-question" class="btn btn-danger btn-mod-main" disabled>
+        🛑 Dejar de Escuchar Respuestas
+      </button>
+
+      <!-- Revelar resultado -->
+      <button id="btn-show-result" class="btn btn-outline-teal btn-mod-main" disabled>
+        💡 Revelar Respuesta Correcta
+      </button>
+
+      <!-- Reiniciar -->
+      <button id="btn-reset-game" class="btn btn-secondary" style="margin-left: auto;">
+        🔄 Reiniciar Todo
+      </button>
+    </nav>
+
+    <!-- 2-Column Main Workspace -->
+    <main class="mod-grid">
+      <!-- Col 1: Questions List -->
+      <section class="mod-panel">
+        <div class="mod-panel-header">
+          <h2>Lista de Preguntas</h2>
+          <span style="font-size: 0.75rem; color: var(--text-dim);">(Clic para activar)</span>
+        </div>
+        <div class="mod-panel-body">
+          <input type="text" id="q-filter" class="q-filter-input" placeholder="Buscar pregunta...">
+          <div id="questions-list">
+            <!-- Questions rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Col 2: Active Question & Live Pending Devices -->
+      <section class="mod-panel">
+        <div class="mod-panel-header">
+          <h2>Panel en Vivo</h2>
+          <span id="mod-substate-text" style="font-size: 0.85rem; color: var(--text-muted);">
+            Estado actual
+          </span>
+        </div>
+        <div class="mod-panel-body">
+          <!-- Active Question Card -->
+          <div class="active-q-box">
+            <div id="active-q-title" class="active-q-title">
+              Selecciona una pregunta para comenzar
+            </div>
+            <div id="active-q-options" class="active-q-options-grid">
+              <!-- Options preview -->
+            </div>
+          </div>
+
+          <!-- PRIMARY FOCUS: Who is missing / Pending to answer -->
+          <div class="pending-section">
+            <div class="pending-header-row">
+              <div class="pending-counter-tag">
+                <span>⏳</span>
+                <span id="pending-counter-text">Faltan por responder: --</span>
+              </div>
+              <span id="total-summary-tag" style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+                0 / 10 respondieron
+              </span>
+            </div>
+
+            <!-- Chips of teams that have NOT answered yet -->
+            <div id="pending-chips-container" class="pending-chips-grid">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Shown when all have answered -->
+            <div id="all-done-banner" class="all-done-banner" style="display: none;">
+              <span>🎉</span>
+              <span>¡Todos los equipos han respondido! Puedes hacer clic en <strong>"Dejar de Escuchar Respuestas"</strong> o <strong>"Revelar"</strong>.</span>
+            </div>
+          </div>
+
+          <!-- Secondary: Answered telemetry feed -->
+          <div class="received-section">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-muted);">
+                Equipos que ya respondieron (Orden de llegada)
+              </h3>
+              <span id="answered-count-badge" class="badge badge-teal">0</span>
+            </div>
+
+            <table class="received-table">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Orden</th>
+                  <th>Equipo</th>
+                  <th style="width: 100px;">Opción</th>
+                  <th style="width: 100px;">Puntos</th>
+                </tr>
+              </thead>
+              <tbody id="answered-table-body">
+                <tr>
+                  <td colspan="4" style="text-align: center; color: var(--text-dim); padding: 14px;">
+                    Ninguna respuesta recibida aún
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/ws.js"></script>
+  <script src="/static/js/moderator_backup.js"></script>
+</body>
+</html>
