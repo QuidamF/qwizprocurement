@@ -14,7 +14,7 @@ echo "[Quiz Kiosk] Verificando disponibilidad de $TARGET_URL ..."
 MAX_ATTEMPTS=30
 ATTEMPT=0
 
-while ! curl -s --head --fail "$TARGET_URL" > /dev/null; do
+while ! curl -s -f -o /dev/null "$TARGET_URL"; do
     ATTEMPT=$((ATTEMPT + 1))
     if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
         echo "[Quiz Kiosk] Advertencia: Se alcanzó el límite de intentos. Intentando abrir de todos modos..."

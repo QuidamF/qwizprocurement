@@ -145,15 +145,15 @@ engine.set_broadcast_callback(engine_broadcast_hook)
 
 # ----------------- HTML Route Handlers -----------------
 
-@app.get("/", response_class=FileResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=FileResponse)
 async def index_page():
     return FileResponse(os.path.join(TEMPLATES_DIR, "index.html"))
 
-@app.get("/screen", response_class=FileResponse)
+@app.api_route("/screen", methods=["GET", "HEAD"], response_class=FileResponse)
 async def screen_page():
     return FileResponse(os.path.join(TEMPLATES_DIR, "screen.html"))
 
-@app.get("/moderator", response_class=FileResponse)
+@app.api_route("/moderator", methods=["GET", "HEAD"], response_class=FileResponse)
 async def moderator_page():
     return FileResponse(os.path.join(TEMPLATES_DIR, "moderator.html"))
 
