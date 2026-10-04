@@ -2,10 +2,9 @@
   "apps": [
     {
       "name": "quiz-backend",
-      "script": "venv/bin/uvicorn",
-      "args": "backend.app:app --host 0.0.0.0 --port 8000",
+      "script": "./start_backend.sh",
       "cwd": "./",
-      "interpreter": "none",
+      "interpreter": "bash",
       "autorestart": true,
       "restart_delay": 5000,
       "max_restarts": 15,
