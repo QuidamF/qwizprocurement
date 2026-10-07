@@ -49,6 +49,9 @@ class GameEngine:
         
         # Real connected devices dictionary (MQTT and Web from unique IPs)
         self.devices: Dict[str, Device] = {}
+        
+        # Virtual Web Buzzers enable/disable flag
+        self.allow_virtual_buzzers: bool = True
 
         # Responses for the current question
         self.current_answers: List[Dict[str, Any]] = []
@@ -225,6 +228,55 @@ class GameEngine:
         if device_id in self.devices:
             self.devices[device_id].status = DeviceStatus.OFFLINE
             self.devices[device_id].last_seen = time.time()
+
+    async def remove_device(self, device_id: str) -> bool:
+        """Removes a device completely from active memory and purges MQTT retain."""
+        device_id = self.normalize_device_id(device_id)
+        if device_id in self.devices:
+            del self.devices[device_id]
+            if self.mqtt_service:
+                self.mqtt_service.clear_retained_status(device_id)
+            logger.info(f"Dispositivo {device_id} eliminado exitosamente.")
+            await self.broadcast_state_change()
+            return True
+        return False
+
+    async def clear_devices(self, only_offline: bool = False) -> int:
+        """
+        Clears device history from memory and clears Mosquitto retained messages.
+        If only_offline is True, keeps online devices and only deletes disconnected ones.
+        """
+        targets = []
+        for d_id, dev in list(self.devices.items()):
+            if only_offline:
+                if dev.status == DeviceStatus.OFFLINE:
+                    targets.append(d_id)
+            else:
+                targets.append(d_id)
+
+        for d_id in targets:
+            if d_id in self.devices:
+                del self.devices[d_id]
+            if self.mqtt_service:
+                self.mqtt_service.clear_retained_status(d_id)
+
+        if not only_offline and self.mqtt_service:
+            self.mqtt_service.clear_all_retained_statuses()
+
+        logger.info(f"Historial de dispositivos limpiado: {len(targets)} eliminados (only_offline={only_offline})")
+        await self.broadcast_state_change()
+        return len(targets)
+
+    async def set_allow_virtual_buzzers(self, allow: bool):
+        """Enables or disables virtual browser buzzers from connecting or participating."""
+        self.allow_virtual_buzzers = allow
+        logger.info(f"Permiso para botoneras virtuales actualizado a: {allow}")
+        if not allow:
+            # Mark any active web devices as offline
+            for dev in self.devices.values():
+                if dev.connection_type == ConnectionType.WEB:
+                    dev.status = DeviceStatus.OFFLINE
+        await self.broadcast_state_change()
 
     # ---------------- Helper Queries ----------------
 
@@ -541,6 +593,7 @@ class GameEngine:
             "pending_count": len(pending),
             "total_devices": total_online,
             "total_registered": len(self.devices),
+            "allow_virtual_buzzers": self.allow_virtual_buzzers,
             "devices": self.get_devices_list(),
             "leaderboard": self.get_leaderboard()
         }
@@ -594,7 +647,8 @@ class GameEngine:
         })
         await self.broadcast("devices", {
             "event": "DEVICES_SNAPSHOT",
-            "devices": self.get_devices_list()
+            "devices": self.get_devices_list(),
+            "allow_virtual_buzzers": self.allow_virtual_buzzers
         })
         for dev_id in self.devices.keys():
             await self.broadcast(f"device_{dev_id}", {

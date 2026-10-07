@@ -35,6 +35,12 @@
           <span id="devices-count-badge" class="badge badge-teal">
             10 Dispositivos
           </span>
+          <button id="btn-toggle-virtual" class="btn btn-outline-teal" style="padding: 6px 14px; font-size: 0.85rem; cursor: pointer;" title="Permitir o bloquear botoneras web por URL">
+            🌐 Botoneras Web: Habilitadas
+          </button>
+          <button id="btn-clear-devices" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-color: #EF4444; color: #FCA5A5; cursor: pointer;" title="Limpiar historial en memoria y purgar tópicos retenidos en Mosquitto">
+            🗑️ Limpiar Historial MQTT
+          </button>
           <a href="/moderator" target="_blank" class="btn btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">
             Ir al Moderador
           </a>
@@ -46,13 +52,23 @@
 
       <!-- Section 1: Live Devices Grid Table -->
       <section class="devices-table-card">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-          <h2 style="font-size: 1.1rem; color: #FFFFFF; font-weight: 700;">
-            Botoneras Registradas en el Game Engine
-          </h2>
-          <span style="font-size: 0.85rem; color: var(--text-muted);">
-            Identidad Lógica (BOT-XX) vinculada a Identidad Física (Hardware MAC)
-          </span>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h2 style="font-size: 1.1rem; color: #FFFFFF; font-weight: 700;">
+              Botoneras Registradas en el Game Engine
+            </h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">
+              Identidad Lógica (BOT-XX / OCTY-XX) vinculada a Identidad Física (Hardware MAC)
+            </span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-clean-offline-only" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.8rem;" title="Elimina solo dispositivos OFFLINE">
+              🧹 Purgar solo OFFLINE
+            </button>
+            <button id="btn-reset-all" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.8rem; border-color: #EF4444; color: #FCA5A5;" title="Reinicia todas las conexiones y limpia Mosquitto">
+              ⚠️ Reset Total de Conexiones
+            </button>
+          </div>
         </div>
 
         <div style="overflow-x: auto;">

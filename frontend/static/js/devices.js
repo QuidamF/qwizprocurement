@@ -77,8 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${statusBadge}</td>
         <td><strong style="font-family: var(--font-mono); color: #FBBF24;">${dev.score} pts</strong></td>
         <td style="text-align: center;">
-          <button class="btn btn-outline-teal btn-identify" data-id="${dev.device_id}" style="padding: 6px 12px; font-size: 0.8rem;">
+          <button class="btn btn-outline-teal btn-identify" data-id="${dev.device_id}" style="padding: 5px 10px; font-size: 0.8rem;" title="Parpadear LED en botonera">
             💡 Test LED
+          </button>
+          <button class="btn btn-secondary btn-delete-device" data-id="${dev.device_id}" style="padding: 5px 9px; font-size: 0.8rem; border-color: #EF4444; color: #FCA5A5; margin-left: 6px;" title="Eliminar botonera y purgar de MQTT">
+            🗑️
           </button>
         </td>
       `;
@@ -103,6 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
         identifyDevice(id);
+      });
+    });
+
+    // Bind Delete Device Buttons
+    document.querySelectorAll('.btn-delete-device').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        if (confirm(`¿Eliminar la botonera ${id} del registro y purgar su historial MQTT?`)) {
+          deleteDevice(id);
+        }
       });
     });
   }
@@ -136,6 +149,95 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error(e);
       alert('Error de conexión al actualizar el nombre.');
     }
+  }
+
+  async function deleteDevice(deviceId) {
+    logTerminal(`quiz/device/${deviceId}/delete`, `Eliminando dispositivo y purgando retención MQTT...`);
+    try {
+      const res = await fetch(`/api/devices/${deviceId}/delete`, { method: 'POST' });
+      if (res.ok) {
+        logTerminal(`quiz/device/${deviceId}/delete`, `✅ Dispositivo ${deviceId} eliminado correctamente`);
+      } else {
+        alert(`No se pudo eliminar el dispositivo ${deviceId}`);
+      }
+    } catch (e) {
+      console.error(e);
+      alert(`Error de red al eliminar el dispositivo: ${e.message}`);
+    }
+  }
+
+  async function clearDevices(onlyOffline = false) {
+    const msg = onlyOffline 
+      ? '¿Purgar todas las botoneras actualmente OFFLINE del registro?' 
+      : '⚠️ ¿Limpiar TODO el historial de botoneras y purgar los tópicos retenidos en Mosquitto?';
+    if (!confirm(msg)) return;
+
+    logTerminal('quiz/devices/clear', `Limpiando historial (onlyOffline=${onlyOffline})...`);
+    try {
+      const res = await fetch('/api/devices/clear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ only_offline: onlyOffline })
+      });
+      const data = await res.json();
+      logTerminal('quiz/devices/clear', `✅ Limpieza completada: ${data.cleared_count} dispositivos purgados.`);
+      window.soundFX.playStart();
+    } catch (e) {
+      console.error(e);
+      alert(`Error al limpiar historial: ${e.message}`);
+    }
+  }
+
+  const btnToggleVirtual = document.getElementById('btn-toggle-virtual');
+  const btnClearDevices = document.getElementById('btn-clear-devices');
+  const btnCleanOfflineOnly = document.getElementById('btn-clean-offline-only');
+  const btnResetAll = document.getElementById('btn-reset-all');
+
+  let allowVirtualBuzzersState = true;
+
+  function updateVirtualButtonUI(allow) {
+    allowVirtualBuzzersState = allow;
+    if (!btnToggleVirtual) return;
+    if (allow) {
+      btnToggleVirtual.className = 'btn btn-outline-teal';
+      btnToggleVirtual.textContent = '🌐 Botoneras Web: Habilitadas';
+      btnToggleVirtual.style.borderColor = 'var(--accent-teal)';
+      btnToggleVirtual.style.color = '#FFFFFF';
+    } else {
+      btnToggleVirtual.className = 'btn btn-secondary';
+      btnToggleVirtual.textContent = '🔒 Botoneras Web: BLOQUEADAS';
+      btnToggleVirtual.style.borderColor = '#F59E0B';
+      btnToggleVirtual.style.color = '#FCD34D';
+    }
+  }
+
+  if (btnToggleVirtual) {
+    btnToggleVirtual.addEventListener('click', async () => {
+      const targetState = !allowVirtualBuzzersState;
+      logTerminal('quiz/settings/virtual', `Cambiando estado de botoneras virtuales a: ${targetState ? 'HABILITADAS' : 'BLOQUEADAS'}...`);
+      try {
+        const res = await fetch('/api/settings/virtual-buzzers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ allow: targetState })
+        });
+        const data = await res.json();
+        updateVirtualButtonUI(data.allow_virtual_buzzers);
+        logTerminal('quiz/settings/virtual', `✅ Botoneras virtuales ${data.allow_virtual_buzzers ? 'habilitadas para pruebas' : 'bloqueadas (modo solo ESP32 físico)'}`);
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }
+
+  if (btnClearDevices) {
+    btnClearDevices.addEventListener('click', () => clearDevices(false));
+  }
+  if (btnCleanOfflineOnly) {
+    btnCleanOfflineOnly.addEventListener('click', () => clearDevices(true));
+  }
+  if (btnResetAll) {
+    btnResetAll.addEventListener('click', () => clearDevices(false));
   }
 
   // Bind MQTT Simulator: Register
@@ -199,6 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ws = new QuizWS('/ws/devices', (data) => {
     if (data.event === 'DEVICES_SNAPSHOT') {
       renderDevices(data.devices);
+      if (data.allow_virtual_buzzers !== undefined) {
+        updateVirtualButtonUI(data.allow_virtual_buzzers);
+      }
       if (data.mqtt_connected !== undefined) {
         mqttBrokerBadge.className = data.mqtt_connected ? 'badge badge-success' : 'badge badge-danger';
         mqttBrokerBadge.textContent = data.mqtt_connected 

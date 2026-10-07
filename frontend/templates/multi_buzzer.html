@@ -188,6 +188,11 @@
             }
           } else if (data.event === 'ANSWER_ACCEPTED') {
             statusEl.textContent = `Registrado #${data.order}`;
+          } else if (data.event === 'ERROR') {
+            canAnswer = false;
+            btnEls.forEach(b => b.disabled = true);
+            statusEl.textContent = data.message || 'Bloqueado';
+            statusEl.style.color = '#F87171';
           }
         });
 

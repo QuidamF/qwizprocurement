@@ -148,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (data.event === 'ERROR') {
       canAnswer = false;
       buzzerGrid.className = 'buzzer-grid disabled';
-      setStatus('Dispositivo Duplicado', data.message || 'Ya existe otro equipo conectado desde esta IP.', '⚠️', 'error');
+      const title = data.message && data.message.includes('deshabilitadas') ? 'Botoneras Web Desactivadas' : 'Conexión Rechazada';
+      setStatus(title, data.message || 'Ya existe otro equipo conectado desde esta IP o el acceso web está desactivado.', '⚠️', 'error');
     } else if (data.event === 'ANSWER_ACCEPTED') {
       setStatus('¡Respuesta Registrada!', `Llegaste en orden #${data.order}`, '✅', '');
     } else if (data.event === 'TIME_UPDATE') {

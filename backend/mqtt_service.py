@@ -78,7 +78,13 @@ class MQTTService:
 
     def _on_message(self, client, userdata, msg):
         topic = msg.topic
+        if not msg.payload or len(msg.payload) == 0:
+            logger.info(f"MQTT RX [{topic}]: Mensaje retenido purgado (vacío)")
+            return
         payload_str = msg.payload.decode("utf-8", errors="ignore")
+        if not payload_str.strip():
+            logger.info(f"MQTT RX [{topic}]: Payload vacío, ignorado")
+            return
         logger.info(f"MQTT RX [{topic}]: {payload_str}")
 
         try:
@@ -225,3 +231,29 @@ class MQTTService:
         self.publish(f"octopy/quiz/box/{box_id}/command", {"cmd": "CORRECT", "box": box_id})
         if self.main_loop:
             self.main_loop.call_later(1.2, lambda: self.publish(f"octopy/quiz/box/{box_id}/command", {"cmd": "WAITING"}))
+
+    def clear_retained_status(self, box_id: str):
+        """
+        Clears retained MQTT status messages for a device.
+        In MQTT standard, publishing an empty payload with retain=True deletes the retained message.
+        """
+        box_id = box_id.upper()
+        topics = [
+            f"octopy/quiz/box/{box_id}/status",
+            f"octopy/quiz/box/{box_id}/answer",
+            f"quiz/device/{box_id}/status",
+            f"quiz/device/{box_id}/announce"
+        ]
+        for t in topics:
+            if self.client and self.is_connected:
+                self.client.publish(t, payload="", qos=1, retain=True)
+                logger.info(f"MQTT Retained topic cleared: {t}")
+
+    def clear_all_retained_statuses(self, box_ids: Optional[list] = None):
+        """
+        Clears retained MQTT messages for a list of box IDs or standard range (OCTY-01 to OCTY-20).
+        """
+        if not box_ids:
+            box_ids = [f"OCTY-{i:02d}" for i in range(1, 21)] + [f"BOT-{i:02d}" for i in range(1, 21)]
+        for b_id in box_ids:
+            self.clear_retained_status(b_id)

@@ -201,6 +201,39 @@ async def identify_device_endpoint(device_id: str):
     await engine.identify_device(device_id)
     return {"status": "ok", "message": f"Identify command sent to {device_id}"}
 
+@app.delete("/api/devices/{device_id}")
+@app.post("/api/devices/{device_id}/delete")
+async def delete_device_endpoint(device_id: str):
+    removed = await engine.remove_device(device_id)
+    if not removed:
+        raise HTTPException(status_code=404, detail="Dispositivo no encontrado")
+    return {"status": "ok", "removed": device_id}
+
+class ClearDevicesRequest(BaseModel):
+    only_offline: bool = False
+
+@app.post("/api/devices/clear")
+async def clear_devices_endpoint(body: Optional[ClearDevicesRequest] = None):
+    only_offline = body.only_offline if body else False
+    count = await engine.clear_devices(only_offline=only_offline)
+    return {"status": "ok", "cleared_count": count, "only_offline": only_offline}
+
+class VirtualBuzzersRequest(BaseModel):
+    allow: bool
+
+@app.post("/api/settings/virtual-buzzers")
+async def toggle_virtual_buzzers_endpoint(body: VirtualBuzzersRequest):
+    await engine.set_allow_virtual_buzzers(body.allow)
+    return {"status": "ok", "allow_virtual_buzzers": engine.allow_virtual_buzzers}
+
+@app.get("/api/settings")
+async def get_settings_endpoint():
+    return {
+        "allow_virtual_buzzers": engine.allow_virtual_buzzers,
+        "mqtt_connected": mqtt_service.is_connected,
+        "total_devices": len(engine.devices)
+    }
+
 @app.post("/api/devices/register")
 async def register_device_api(reg: DeviceRegistration):
     dev = await engine.register_mqtt_device(reg)
@@ -254,7 +287,8 @@ async def ws_devices_endpoint(websocket: WebSocket):
         await websocket.send_text(json.dumps({
             "event": "DEVICES_SNAPSHOT",
             "devices": engine.get_devices_list(),
-            "mqtt_connected": mqtt_service.is_connected
+            "mqtt_connected": mqtt_service.is_connected,
+            "allow_virtual_buzzers": engine.allow_virtual_buzzers
         }, ensure_ascii=False))
 
         while True:
@@ -272,6 +306,18 @@ async def ws_devices_endpoint(websocket: WebSocket):
                     hw_id = payload.get("hardware_id")
                     if dev_id:
                         await engine.update_device_info(dev_id, name=name, hardware_id=hw_id)
+                elif cmd == "remove_device":
+                    dev_id = payload.get("device_id")
+                    if dev_id:
+                        await engine.remove_device(dev_id)
+                elif cmd == "clear_devices":
+                    only_off = payload.get("only_offline", False)
+                    await engine.clear_devices(only_offline=only_off)
+                elif cmd == "toggle_virtual_buzzers":
+                    allow = payload.get("allow")
+                    if allow is None:
+                        allow = not engine.allow_virtual_buzzers
+                    await engine.set_allow_virtual_buzzers(allow)
             except Exception as e:
                 logger.error(f"Devices WS error: {e}")
     except WebSocketDisconnect:
@@ -316,6 +362,17 @@ async def ws_moderator_endpoint(websocket: WebSocket):
 @app.websocket("/ws/buzzer/{device_id}")
 async def ws_buzzer_endpoint(websocket: WebSocket, device_id: str):
     device_id = engine.normalize_device_id(device_id)
+
+    # 0. Check if virtual buzzers are enabled
+    if not engine.allow_virtual_buzzers:
+        logger.warning(f"Rechazada conexión de botonera web {device_id}: botoneras virtuales deshabilitadas.")
+        await websocket.accept()
+        await websocket.send_text(json.dumps({
+            "event": "ERROR",
+            "message": "Las botoneras virtuales están deshabilitadas por el moderador. Solo se admiten botoneras físicas ESP32 vía MQTT."
+        }, ensure_ascii=False))
+        await websocket.close(code=1008)
+        return
 
     # 1. Obtain real client IP
     client_ip = websocket.client.host if websocket.client else "127.0.0.1"
